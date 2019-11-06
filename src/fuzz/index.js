@@ -195,6 +195,23 @@ class Builder {
         return a.filter(v => b.indexOf(v) === -1);
     }
 
+    combine(...itemGroups) {
+        console.log(itemGroups);
+        if (itemGroups.length > 1) {
+            const a = itemGroups[0];
+            const b = itemGroups[1];
+            return this.combine(a.reduce((acc, itemA) => {
+                const combo = [].concat(itemA);
+                for (const itemB of b) {
+                    acc.push(combo.concat(itemB));
+                }
+                return acc;
+            }, []), ...itemGroups.slice(2));
+        } else {
+            return itemGroups.length > 0 ? itemGroups[0] : [];
+        }
+    }
+
     nufuzz() {
         return {
             v: this.value.bind(this),
@@ -211,6 +228,7 @@ class Builder {
             or: this.union.bind(this),
             and: this.intersect.bind(this),
             x: this.exclude.bind(this),
+            comb: this.combine.bind(this),
         };
     }
 

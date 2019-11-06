@@ -2,7 +2,7 @@ const { Builder } = require("../fuzz");
 
 const builder = Builder.fromBase("test");
 const {v, vs, d, t, p, o} = builder.nufuzz();
-const {or, and, x} = builder.calc();
+const {or, and, x, comb} = builder.calc();
 
 const domains = {
     employees: d("employees", vs(
@@ -44,7 +44,9 @@ const domains = {
 };
 
 const valueList = x(or(domains.employees, domains.skills), [v("c#"), v("react")]);
-console.log(valueList);
+const combos = comb(domains.employees.values, domains.skills.values);
+//console.log(combos);
+//console.log(valueList);
 
 const types = {
     employee: t("employee", domains.employees, v("many")),
@@ -62,3 +64,5 @@ const root = o("root", [
     p("position", types.position),
     p("skill", skill),
 ]);
+
+//console.log(root);
