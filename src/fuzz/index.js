@@ -56,6 +56,50 @@ class Type extends Entity {
     }
 }
 
+class TableColumn extends Entity {
+    constructor(id, uid, index, domain) {
+        super(id, uid);
+        this._domain = domain;
+        this._index = index;
+    }
+
+    get domain() {
+        return this._domain;
+    }
+
+    get index() {
+        return this._index;
+    }
+}
+
+class Table extends Entity {
+    constructor(id, uid, columns, data) {
+        super(id, uid);
+        this._assert(!columns.some(c => !(c instanceof TableColumn)), "Type mismatch. All columns need to be instancesof TableColumn.");
+        if (data.length > 0) {
+            this._assert(
+                !columns.some(c => data[0][c.index] === undefined),
+                "The data is missing columns."
+            )
+        }
+        this._columns = columns;
+        this._data = data;
+    }
+
+    get data() {
+        return this._data;
+    }
+
+    get columns() {
+        return this._columns;
+    }
+
+    columnData(column) {
+        this._assert(this._columns.indexOf(column) !== -1, "The given column does not exist in this table.");
+        return this._data.map(row => row[column.index]);
+    }
+}
+
 class PropertyDefinition extends Entity {
     constructor(id, uid, type, defaultValue) {
         super(id, uid);
@@ -172,7 +216,19 @@ class Builder {
         return this._context.registerUnique(
             (v) => v instanceof ObjectDefinition && v.id === id,
             (uid) => new ObjectDefinition(id, uid, properties)
-        )
+        );
+    }
+
+    tableColumn(id, index, domain) {
+        return this._context.register(
+            (uid) => new TableColumn(id, uid, index, domain)
+        );
+    }
+
+    table(id, columns, data) {
+        return this._context.register(
+            (uid) => new Table(id, uid, columns, data)
+        );
     }
 
     union(domainA, domainB) {
@@ -196,7 +252,6 @@ class Builder {
     }
 
     combine(...itemGroups) {
-        console.log(itemGroups);
         if (itemGroups.length > 1) {
             const a = itemGroups[0];
             const b = itemGroups[1];
@@ -220,6 +275,8 @@ class Builder {
             t: this.type.bind(this),
             p: this.property.bind(this),
             o: this.object.bind(this),
+            tt: this.table.bind(this),
+            tc: this.tableColumn.bind(this),
         };
     }
 

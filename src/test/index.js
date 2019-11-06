@@ -1,7 +1,7 @@
 const { Builder } = require("../fuzz");
 
 const builder = Builder.fromBase("test");
-const {v, vs, d, t, p, o} = builder.nufuzz();
+const {v, vs, d, t, p, o, tt, tc} = builder.nufuzz();
 const {or, and, x, comb} = builder.calc();
 
 const domains = {
@@ -15,7 +15,7 @@ const domains = {
         "dava",
         "jova",
     )),
-    positions: d("position", vs(
+    roles: d("position", vs(
         "developer",
         "project-leader",
         "product-owner",
@@ -45,12 +45,19 @@ const domains = {
 
 const valueList = x(or(domains.employees, domains.skills), [v("c#"), v("react")]);
 const combos = comb(domains.employees.values, domains.skills.values);
-//console.log(combos);
+const nueCombo = comb(combos, [v("developer")]);
+const table = tt("test-table", [
+    tc("a", 0, domains.employees),
+    tc("b", 1, domains.skills),
+    tc("c", 2, domains.roles),
+], nueCombo);
+console.log(table.columnData(table.columns[2]));
+//console.log(nueCombo);
 //console.log(valueList);
 
 const types = {
     employee: t("employee", domains.employees, v("many")),
-    position: t("position", domains.positions, v("developer")),
+    position: t("position", domains.roles, v("developer")),
     skill: t("skill", domains.skills, v("frontend")),
     skillLevels: t("skill-level", domains.skillLevels, v("1"))
 };
