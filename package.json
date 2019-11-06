@@ -4,8 +4,8 @@
   "description": "No fuzz",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node src/test/index.js"
   },
-  "author": "Mattias Nybert",
+  "author": "Mattias Nyberg",
   "license": "MIT"
 }
