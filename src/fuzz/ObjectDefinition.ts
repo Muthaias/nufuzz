@@ -22,9 +22,9 @@ export class PropertyDefinition extends Entity {
 }
 
 export class ObjectDefinition extends Entity {
-    private _properties: (PropertyDefinition | ObjectDefinition)[];
-    
-    constructor(id: string, uid: string, properties: (PropertyDefinition | ObjectDefinition)[]) {
+    private _properties: PropertyDefinition[];
+
+    constructor(id: string, uid: string, properties: PropertyDefinition[]) {
         super(id, uid);
         this._properties = properties;
     }

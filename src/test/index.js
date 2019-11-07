@@ -5,36 +5,26 @@ const {v, vs, d, t, p, o, tt, tc} = builder.nufuzz();
 const {or, and, x, comb} = builder.calc();
 
 const domains = {
-    employees: d("employees", vs(
-        "many",
-        "aiab",
-        "josv",
-        "pewi",
-        "joan",
-        "josh",
-        "dava",
-        "jova",
+    first: d("first", vs(
+        "a",
+        "b",
+        "c",
+        "d",
+        "e",
     )),
-    roles: d("position", vs(
-        "developer",
-        "project-leader",
-        "product-owner",
-        "cto",
-        "hr",
-        "ux-designer",
-        "ui-designer",
+    second: d("second", vs(
+        "f",
+        "g",
+        "h",
     )),
-    skills: d("skills", vs(
-        "design",
-        "scss",
-        "typescript",
-        "react",
-        "php",
-        "c#",
-        "frontend",
-        "backend",
+    third: d("third", vs(
+        "i",
+        "j",
+        "k",
+        "l",
+        "m",
     )),
-    skillLevels: d("skill-levels", vs(
+    fourth: d("fourth", vs(
         "1",
         "2",
         "3",
@@ -43,33 +33,21 @@ const domains = {
     ))
 };
 
-const valueList = x(or(domains.employees, domains.skills), [v("c#"), v("react")]);
-const combos = comb(domains.employees.values, domains.skills.values);
-const nueCombo = comb(combos, [v("developer"), v("hr")]);
+const valueList = x(or(domains.first, domains.third), [v("i"), v("a")]);
+const combos = comb(domains.first.values, domains.third.values);
+const nueCombo = comb(combos, [v("1"), v("2")]);
 const table = tt("test-table", [
-    tc("a", 0, domains.employees),
-    tc("b", 1, domains.skills),
-    tc("c", 2, domains.roles),
+    tc("a", 0, domains.first),
+    tc("b", 1, domains.second),
+    tc("c", 2, domains.third),
 ], nueCombo);
 console.log(table.columnData(table.columns[2]));
 //console.log(nueCombo);
 //console.log(valueList);
 
 const types = {
-    employee: t("employee", domains.employees, v("many")),
-    position: t("position", domains.roles, v("developer")),
-    skill: t("skill", domains.skills, v("frontend")),
-    skillLevels: t("skill-level", domains.skillLevels, v("1"))
+    first: t("first", domains.first, v("a")),
+    second: t("second", domains.second, v("f")),
+    third: t("third", domains.third, v("j")),
+    fourth: t("fourth", domains.fourth, v("1"))
 };
-
-const skill = o("skill", [
-    p("skill", types.skill),
-    p("level", types.skillLevels)
-]);
-const root = o("root", [
-    p("employee", types.employee),
-    p("position", types.position),
-    p("skill", skill),
-]);
-
-//console.log(root);
