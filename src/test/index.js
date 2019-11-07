@@ -1,4 +1,4 @@
-const { Builder } = require("../fuzz");
+const { Builder } = require("../../dist");
 
 const builder = Builder.fromBase("test");
 const {v, vs, d, t, p, o, tt, tc} = builder.nufuzz();
@@ -45,7 +45,7 @@ const domains = {
 
 const valueList = x(or(domains.employees, domains.skills), [v("c#"), v("react")]);
 const combos = comb(domains.employees.values, domains.skills.values);
-const nueCombo = comb(combos, [v("developer")]);
+const nueCombo = comb(combos, [v("developer"), v("hr")]);
 const table = tt("test-table", [
     tc("a", 0, domains.employees),
     tc("b", 1, domains.skills),
