@@ -18,7 +18,7 @@ export class Builder {
     }
 
     value(id: string) {
-        return this._context.registerUnique(
+        return this._context.registerUnique<Value>(
             (v) => v instanceof Value && v.id === id,
             (uid) => new Value(id, uid)
         );
@@ -29,28 +29,28 @@ export class Builder {
     }
 
     domain(id: string, values: Entity[]) {
-        return this._context.registerUnique(
+        return this._context.registerUnique<Domain>(
             (v) => v instanceof Domain && v.id === id,
             (uid) => new Domain(id, uid, values)
         );
     }
 
     type(id: string, domain: Domain, defaultValue: Entity) {
-        return this._context.registerUnique(
+        return this._context.registerUnique<Type>(
             (v) => v instanceof Type && v.id === id,
             (uid) => new Type(id, uid, domain, defaultValue)
         );
     }
 
     property(id: string, type: Type, defaultValue: Entity) {
-        return this._context.registerUnique(
+        return this._context.registerUnique<PropertyDefinition>(
             (v) => v instanceof PropertyDefinition && v.id === id,
             (uid) => new PropertyDefinition(id, uid, type, defaultValue || type.defaultValue)
         );
     }
 
     object(id: string, properties: PropertyDefinition[]) {
-        return this._context.registerUnique(
+        return this._context.registerUnique<ObjectDefinition>(
             (v) => v instanceof ObjectDefinition && v.id === id,
             (uid) => new ObjectDefinition(id, uid, properties)
         );
@@ -104,7 +104,16 @@ export class Builder {
         }
     }
 
-    nufuzz() {
+    nufuzz(): {
+        v: Builder["value"],
+        vs: Builder["values"],
+        d: Builder["domain"],
+        t: Builder["type"],
+        p: Builder["property"],
+        o: Builder["object"],
+        tt: Builder["table"],
+        tc: Builder["tableColumn"],
+    } {
         return {
             v: this.value.bind(this),
             vs: this.values.bind(this),
@@ -117,7 +126,12 @@ export class Builder {
         };
     }
 
-    calc() {
+    calc(): {
+        or: Builder["union"],
+        and: Builder["intersect"],
+        x: Builder["exclude"],
+        comb: Builder["combine"],
+    } {
         return {
             or: this.union.bind(this),
             and: this.intersect.bind(this),

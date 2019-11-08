@@ -9,20 +9,20 @@ export class Context {
         this._entityMap = new Map<string, Entity>();
     }
 
-    register(createCallback: (uid: string) => Entity) {
+    register<T extends Entity>(createCallback: (uid: string) => T): T {
         const uid = this.allocateUid();
         const value = createCallback(uid);
         this._entityMap.set(uid, value);
         return value;
     }
 
-    registerUnique(match: (e: Entity) => boolean, createCallback: (uid: string) => Entity) {
+    registerUnique<T extends Entity>(match: (e: T) => boolean, createCallback: (uid: string) => T): T {
         for (const v of this._entityMap.values()) {
-            if (match(v)) {
-                return v;
+            if (match(v as T)) {
+                return v as T;
             }
         }
-        return this.register(createCallback);
+        return this.register<T>(createCallback);
     }
 
     allocateUid() {

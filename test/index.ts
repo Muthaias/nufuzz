@@ -1,4 +1,4 @@
-const { Builder } = require("../../dist");
+import { Builder } from "../src/fuzz";
 
 const builder = Builder.fromBase("test");
 const {v, vs, d, t, p, o, tt, tc} = builder.nufuzz();
