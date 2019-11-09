@@ -4,6 +4,7 @@
 		"sourceMap": true,
 		"noImplicitAny": true,
 		"downlevelIteration": true,
+		"declaration": true,
 		"module": "commonjs",
 		"target": "es5",
 		"lib": ["es5", "es6", "dom"],
